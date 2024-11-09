@@ -10,7 +10,7 @@ redis_host = os.getenv('REDIS_HOST', 'localhost')
 # Connect to the Redis server
 r = redis.Redis(host=redis_host, port=6379, db=0)
 
-@app.route('/api', methods=['GET'])
+@app.route('/api/', methods=['GET'])
 def api():
     # Example of setting and getting a value from Redis
     r.set('message', 'Hello from Redis!')
