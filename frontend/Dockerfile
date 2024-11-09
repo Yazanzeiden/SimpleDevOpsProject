@@ -1,8 +1,17 @@
+# Use the official Nginx image
 FROM nginx:alpine
-# Set the working directory to /usr/share/nginx/html
+
+# Set the working directory to the Nginx default HTML directory
 WORKDIR /usr/share/nginx/html
-# Copy the static files from your local frontend directory to the Nginx container
+
+# Copy the frontend static files into the container
 COPY index.html app.js ./
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# No need to run any command since Nginx runs by default
+
 
 
 
