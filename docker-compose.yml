@@ -50,6 +50,7 @@ version: '3'
 
 services:
   frontend:
+    container_name: frontend
     build:
       context: ./frontend  # Frontend directory
     ports:
@@ -60,6 +61,7 @@ services:
       - app-network
 
   backend:
+    container_name: backend
     build:
       context: ./backend  # Backend directory
     ports:
@@ -72,12 +74,28 @@ services:
       - app-network
 
   redis:
+    container_name: redis
     image: "redis:alpine"
     ports:
       - "6379:6379"
     networks:
       - app-network
 
+  nginx:
+    container_name: nginx
+    image: nginx:alpine  # Nginx image for reverse proxy
+    ports:
+      - "80:80"  # Expose port 80 for the proxy
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Your custom Nginx config file
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
+
+
