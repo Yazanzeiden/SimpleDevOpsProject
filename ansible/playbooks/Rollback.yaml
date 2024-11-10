@@ -9,7 +9,7 @@
       aws_s3:
         bucket: simple-devops-project-backup-yazan
         object: redis_backup/dump.rdb
-        dest: /tmp/redis_backup/dump.rdb
+        dest: /tmp/redis_backup/
         mode: get
 
     - name: Create temporary container with Redis volume mounted for restore
