@@ -1,7 +1,7 @@
 ---
 - name: Deploy and Test Application
   hosts: webservers
-  become: true  # If you need root privileges
+  become: false  # If you need root privileges
 
 
   tasks:
