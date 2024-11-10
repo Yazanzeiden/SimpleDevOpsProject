@@ -1,4 +1,4 @@
----
+# ---
 - name: Backup Redis and Code to S3
   hosts: backupservers
   become: true
@@ -31,15 +31,15 @@
     - name: Upload Redis backup to S3
       aws_s3:
         bucket: simple-devops-project-backup-yazan
-        object: redis_backup.tar.gz
-        src: /tmp/redis_backup
+        object: redis_backup/dump.rdb  # Upload the dump.rdb file inside a redis_backup folder in S3
+        src: /tmp/redis_backup/dump.rdb  # Correct file path for the Redis dump file
         mode: put
       when: redis_backup is succeeded
 
     - name: Upload code backup to S3
       aws_s3:
         bucket: simple-devops-project-backup-yazan
-        object: app_backup.tar.gz
+        object: app_backups/app_backup.tar.gz
         src: /tmp/app_backup.tar.gz
         mode: put
       when: code_backup is succeeded
