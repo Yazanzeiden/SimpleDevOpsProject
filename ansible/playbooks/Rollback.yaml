@@ -45,11 +45,11 @@
         dest: /tmp/app_backup.tar.gz
         mode: get
 
-    - name: Extract application code backup to project directory
-      unarchive:
-        src: /tmp/app_backup.tar.gz
-        dest: /home/ec2-user/SimpleDevOpsProject/
-        remote_src: yes
+    # - name: Extract application code backup to project directory
+    #   unarchive:
+    #     src: /tmp/app_backup.tar.gz
+    #     dest: /home/ec2-user/SimpleDevOpsProject/
+    #     remote_src: yes
 
 
     - name: Clean up temporary backup files
