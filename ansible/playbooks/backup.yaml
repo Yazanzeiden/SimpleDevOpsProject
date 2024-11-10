@@ -2,7 +2,7 @@
 - name: Backup Redis and Code to S3
   hosts: webservers
   become: true
-
+  
   tasks:
 
     - name: Create temporary container with Redis volume mounted
