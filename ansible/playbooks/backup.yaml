@@ -1,0 +1,8 @@
+---
+- name: Backup to s3
+  hosts: webservers
+  become: true  # Use root privileges for necessary tasks
+  tasks:
+    - name: Backup to s3
+      pause:
+        seconds: 60
