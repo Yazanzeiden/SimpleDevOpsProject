@@ -54,7 +54,7 @@ services:
     build:
       context: ./frontend  # Frontend directory
     ports:
-      - "3000:8080"  # Expose port 8080 for frontend
+      - "8080:8080"  # Expose port 8080 for frontend
     depends_on:
       - backend
     networks:
