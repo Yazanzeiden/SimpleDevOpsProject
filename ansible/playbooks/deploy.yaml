@@ -1,10 +1,46 @@
 ---
-- name: Deploy and Test Application
+- name: Deploy and Set Up Application on EC2
   hosts: webservers
-  become: true  # If you need root privileges
-  
-
+  become: true  # Use root privileges for necessary tasks
+  vars:
+    repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
+    dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
+    docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
 
   tasks:
-    - name: testing
-      command: echo "Hello"
+    # Step 1: Ensure Docker is installed on the EC2 instance
+    - name: Ensure Docker is installed
+      package:
+        name: docker
+        state: present
+
+
+    # Step 3: Make Docker Compose executable
+    - name: Make Docker Compose executable
+      command: chmod +x /usr/local/bin/docker-compose
+
+    # Step 4: Clone the repository into the home directory
+    - name: Clone the repository into the home directory
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ dest_dir }}"
+        version: master
+        force: yes
+
+    # Step 5: Run Docker Compose to bring up the application (in the background)
+    - name: Deploy the application using Docker Compose
+      command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
+      args:
+        chdir: "{{ docker_compose_dir }}"
+
+    # Step 6: Verify that the Docker Compose services are up and running
+    - name: Check if Docker Compose services are running
+      command: docker-compose ps
+      args:
+        chdir: "{{ docker_compose_dir }}"
+      register: docker_compose_status
+      failed_when: "'Up' not in docker_compose_status.stdout"
+
+    - name: Show success message
+      debug:
+        msg: "Deployment was successful, Docker Compose is running."
