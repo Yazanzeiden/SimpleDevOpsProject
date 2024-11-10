@@ -1,0 +1,59 @@
+---
+- name: Rollback and Restore Redis and Application Data from Latest Backup
+  hosts: backupservers
+  become: true
+  
+  tasks:
+  
+    - name: Download Redis backup from S3
+      aws_s3:
+        bucket: simple-devops-project-backup-yazan
+        object: redis_backup/dump.rdb
+        dest: /tmp/redis_backup/dump.rdb
+        mode: get
+
+    - name: Create temporary container with Redis volume mounted for restore
+      docker_container:
+        name: restore_redis
+        image: alpine
+        command: sleep infinity
+        volumes:
+          - simpledevopsproject_redis_data:/data  # Use same volume
+        state: started
+
+    - name: Copy Redis backup data from local to Redis container
+      command: "docker cp /tmp/redis_backup/dump.rdb restore_redis:/data/dump.rdb"
+      register: redis_restore
+      become: true
+
+    - name: Restart Redis container after restoring data
+      docker_container:
+        name: restore_redis
+        state: restarted
+
+    - name: Download application code backup from S3
+      aws_s3:
+        bucket: simple-devops-project-backup-yazan
+        object: app_backups/app_backup.tar.gz
+        dest: /tmp/app_backup.tar.gz
+        mode: get
+
+    - name: Extract application code backup to project directory
+      unarchive:
+        src: /tmp/app_backup.tar.gz
+        dest: /home/ec2-user/SimpleDevOpsProject/
+        remote_src: yes
+
+
+    - name: Clean up temporary backup files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/redis_backup/dump.rdb
+        - /tmp/app_backup.tar.gz
+
+    - name: Stop the restore Redis container
+      docker_container:
+        name: restore_redis
+        state: stopped
