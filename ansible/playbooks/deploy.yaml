@@ -76,7 +76,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ dest_dir }}"
-        version: master
+        version: Master
         force: yes
 
     # Step 4: Run unit tests for the backend application (app.py)
