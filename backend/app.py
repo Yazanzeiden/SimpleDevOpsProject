@@ -26,7 +26,7 @@ import os
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins="http://frontend:80/")  # Enable CORS for all routes
+# CORS(app, origins="http://frontend:80/")  # Enable CORS for all routes
 
 # Get the Redis host from the environment variable
 redis_host = os.getenv('REDIS_HOST', 'localhost')
