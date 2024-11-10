@@ -62,7 +62,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ dest_dir }}"
-        version: master  # Use lowercase 'master' for the branch name
+        version: Master  # Use lowercase 'master' for the branch name
         force: yes
 
     # Step 2: Run unit tests for the backend application using a Docker container
