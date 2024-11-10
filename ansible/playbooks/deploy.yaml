@@ -1,3 +1,50 @@
+# ---
+# - name: Deploy and Set Up Application on EC2
+#   hosts: webservers
+#   become: true  # Use root privileges for necessary tasks
+#   vars:
+#     repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
+#     dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
+#     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
+
+#   tasks:
+#     # Step 1: Ensure Docker is installed on the EC2 instance
+#     - name: Ensure Docker is installed
+#       package:
+#         name: docker
+#         state: present
+
+#     # Step 4: Clone the repository into the home directory
+#     - name: Clone the repository into the home directory
+#       git:
+#         repo: "{{ repo_url }}"
+#         dest: "{{ dest_dir }}"
+#         version: Master
+#         force: yes
+
+#     # Step 5: Run Docker Compose to bring up the application (in the background)
+#     - name: Deploy the application using Docker Compose
+#       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+
+#     # Step 6: Verify that the Docker Compose services are up and running
+#     - name: Check if Docker Compose services are running
+#       command: docker-compose ps
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+#       register: docker_compose_status
+#       failed_when: "'Up' not in docker_compose_status.stdout"
+
+#     - name: Show success message
+#       debug:
+#         msg: "Deployment was successful, Docker Compose is running."
+
+
+####### testing unit test for the backend:
+
+
+
 ---
 - name: Deploy and Set Up Application on EC2
   hosts: webservers
@@ -5,37 +52,72 @@
   vars:
     repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
     dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
+    backend_dir: "/home/ec2-user/SimpleDevOpsProject/backend"  # Backend directory where the app.py file is located
     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
 
   tasks:
-    # Step 1: Ensure Docker is installed on the EC2 instance
+    # Step 1: Install Python dependencies for unit tests
+    - name: Ensure Python 3 and pip are installed
+      package:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    # Step 2: Install pytest for running unit tests
+    - name: Install pytest
+      pip:
+        name: pytest
+        state: present
+
+    # Step 3: Clone the repository into the home directory
+    - name: Clone the repository into the home directory
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ dest_dir }}"
+        version: master
+        force: yes
+
+    # Step 4: Run unit tests for the backend application (app.py)
+    - name: Run unit tests for the backend application
+      shell: |
+        cd {{ backend_dir }}
+        pytest --maxfail=1 --disable-warnings -q
+      register: result
+      failed_when: result.rc != 0
+      ignore_errors: false
+
+    # Step 5: Fail the playbook if unit tests fail
+    - name: Fail the playbook if unit tests fail
+      fail:
+        msg: "Unit tests failed! Deployment will not proceed."
+      when: result.rc != 0
+
+    # Step 6: Ensure Docker is installed on the EC2 instance
     - name: Ensure Docker is installed
       package:
         name: docker
         state: present
 
-    # Step 4: Clone the repository into the home directory
-    - name: Clone the repository into the home directory
-      git:
-        repo: "{{ repo_url }}"
-        dest: "{{ dest_dir }}"
-        version: Master
-        force: yes
-
-    # Step 5: Run Docker Compose to bring up the application (in the background)
+    # Step 7: Deploy the application using Docker Compose if unit tests pass
     - name: Deploy the application using Docker Compose
       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
       args:
         chdir: "{{ docker_compose_dir }}"
+      when: result.rc == 0
 
-    # Step 6: Verify that the Docker Compose services are up and running
+    # Step 8: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
       command: docker-compose ps
       args:
         chdir: "{{ docker_compose_dir }}"
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
+      when: result.rc == 0
 
+    # Step 9: Show success message if everything is successful
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
+      when: result.rc == 0
+
