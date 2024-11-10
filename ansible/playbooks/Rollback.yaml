@@ -4,12 +4,19 @@
   become: true
   
   tasks:
+
+    - name: Ensure Redis backup directory exists
+      file:
+        path: /tmp/redis_backup
+        state: directory
+        mode: '0755'
+
   
     - name: Download Redis backup from S3
       aws_s3:
         bucket: simple-devops-project-backup-yazan
         object: redis_backup/dump.rdb
-        dest: /tmp/redis_backup/
+        dest: /tmp/redis_backup/dump.rdb
         mode: get
 
     - name: Create temporary container with Redis volume mounted for restore
