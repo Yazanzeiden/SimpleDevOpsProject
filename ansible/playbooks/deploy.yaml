@@ -48,7 +48,7 @@
     repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
     dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
-    unit_test_result: true  # Set to 'true' to simulate pass, 'false' to simulate fail
+    unit_test_result: false  # Set to 'true' to simulate pass, 'false' to simulate fail
 
   tasks:
     # Step 1: Ensure Docker is installed on the EC2 instance
