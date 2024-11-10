@@ -1,6 +1,6 @@
 ---
 - name: Backup Redis and Code to S3
-  hosts: webservers
+  hosts: backupservers
   become: true
   
   tasks:
