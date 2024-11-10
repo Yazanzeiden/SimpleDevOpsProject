@@ -152,12 +152,14 @@
           PYTHONPATH: "/usr/bin/python2.7"
       register: unit_test_result
       ignore_errors: yes  # Continue even if tests fail to handle the result in the next task
+      failed_when: unit_test_result.exit_code | default(0) | int != 0
 
     # Step 3: Fail the playbook if unit tests fail
     - name: Fail the playbook if unit tests fail
       fail:
         msg: "Unit tests failed! Deployment will not proceed."
-      when: unit_test_result.exit_code is defined and unit_test_result.exit_code != 0
+      when: (unit_test_result.exit_code | default(0) | int) != 0
+
 
     # Step 4: Ensure Docker is installed on the EC2 instance
     - name: Ensure Docker is installed
