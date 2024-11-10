@@ -30,6 +30,8 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data  # Mount volume to persist Redis data
     networks:
       - app-network
 
@@ -50,5 +52,9 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  redis_data:  # Declare volume for Redis data
+
 
 
