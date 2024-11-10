@@ -16,7 +16,7 @@
 const root = document.getElementById("root");
 
 // Fetching data from the backend API
-fetch('http://backend/api/')  // API URL from the backend container
+fetch('/api/')  // API URL from the backend container
     .then(response => response.text())  // Get the raw response as text
     .then(data => {
         root.innerHTML = `<h1>${data}</h1>`;  // Directly display the raw response in the HTML
