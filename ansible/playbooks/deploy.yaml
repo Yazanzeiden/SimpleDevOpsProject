@@ -77,7 +77,7 @@
         state: started
         restart_policy: no
         auto_remove: yes
-        environment:
+        env:
           PYTHONPATH: "/usr/bin/python2.7"
       register: result
 
