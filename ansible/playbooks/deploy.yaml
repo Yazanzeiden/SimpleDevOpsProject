@@ -67,7 +67,6 @@
 
     # Step 2: Run unit tests for the backend application using a Docker container
     - name: Run unit tests for the backend application using Docker
-      ansible_python_interpreter: /usr/bin/python2.7
       docker_container:
         name: pytest-container
         image: python:2.7  # Use Python 2.7 image
@@ -78,6 +77,8 @@
         state: started
         restart_policy: no
         auto_remove: yes
+        environment:
+          PYTHONPATH: "/usr/bin/python2.7"
       register: result
 
     # Step 3: Fail the playbook if unit tests fail
