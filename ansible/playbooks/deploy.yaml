@@ -45,6 +45,77 @@
 
 
 
+# ---
+# - name: Deploy and Set Up Application on EC2
+#   hosts: webservers
+#   become: true
+#   vars:
+#     repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"
+#     dest_dir: "/home/ec2-user/SimpleDevOpsProject"
+#     backend_dir: "/home/ec2-user/SimpleDevOpsProject/backend"
+#     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"
+#     ansible_python_interpreter: /usr/bin/python2  # Ensure Python 2 is used globally for this playbook
+
+#   tasks:
+#     # Step 1: Clone the repository into the home directory
+#     - name: Clone the repository into the home directory
+#       git:
+#         repo: "{{ repo_url }}"
+#         dest: "{{ dest_dir }}"
+#         version: Master  # Use lowercase 'master' for the branch name
+#         force: yes
+
+#     # Step 2: Run unit tests for the backend application using a Docker container
+#     - name: Run unit tests for the backend application using Docker
+#       docker_container:
+#         name: pytest-container
+#         image: python:2.7  # Use Python 2.7 image
+#         command: |
+#           bash -c "pip install pytest && cd /app && pytest --maxfail=1 --disable-warnings -q"
+#         volumes:
+#           - "{{ backend_dir }}:/app"
+#         state: started
+#         restart_policy: no
+#         auto_remove: yes
+#         env:
+#           PYTHONPATH: "/usr/bin/python2.7"
+#       register: result
+
+#     # Step 3: Fail the playbook if unit tests fail
+#     - name: Fail the playbook if unit tests fail
+#       fail:
+#         msg: "Unit tests failed! Deployment will not proceed."
+#       when: result.rc != 0
+
+#     # Step 4: Ensure Docker is installed on the EC2 instance
+#     - name: Ensure Docker is installed
+#       package:
+#         name: docker
+#         state: present
+#       when: ansible_facts.packages.docker is not defined
+
+#     # Step 5: Deploy the application using Docker Compose if unit tests pass
+#     - name: Deploy the application using Docker Compose
+#       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+#       when: result.rc == 0
+
+#     # Step 6: Verify that the Docker Compose services are up and running
+#     - name: Check if Docker Compose services are running
+#       command: docker-compose ps
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+#       register: docker_compose_status
+#       failed_when: "'Up' not in docker_compose_status.stdout"
+#       when: result.rc == 0
+
+#     # Step 7: Show success message if everything is successful
+#     - name: Show success message
+#       debug:
+#         msg: "Deployment was successful, Docker Compose is running."
+#       when: result.rc == 0
+
 ---
 - name: Deploy and Set Up Application on EC2
   hosts: webservers
@@ -62,7 +133,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ dest_dir }}"
-        version: Master  # Use lowercase 'master' for the branch name
+        version: master  # Use lowercase 'master' for the branch name
         force: yes
 
     # Step 2: Run unit tests for the backend application using a Docker container
@@ -79,13 +150,14 @@
         auto_remove: yes
         env:
           PYTHONPATH: "/usr/bin/python2.7"
-      register: result
+      register: unit_test_result
+      ignore_errors: yes  # Continue even if tests fail to handle the result in the next task
 
     # Step 3: Fail the playbook if unit tests fail
     - name: Fail the playbook if unit tests fail
       fail:
         msg: "Unit tests failed! Deployment will not proceed."
-      when: result.rc != 0
+      when: unit_test_result.rc != 0
 
     # Step 4: Ensure Docker is installed on the EC2 instance
     - name: Ensure Docker is installed
@@ -99,7 +171,7 @@
       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
       args:
         chdir: "{{ docker_compose_dir }}"
-      when: result.rc == 0
+      when: unit_test_result.rc == 0
 
     # Step 6: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
@@ -108,12 +180,11 @@
         chdir: "{{ docker_compose_dir }}"
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
-      when: result.rc == 0
+      when: unit_test_result.rc == 0
 
     # Step 7: Show success message if everything is successful
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
-      when: result.rc == 0
-
+      when: unit_test_result.rc == 0
 
