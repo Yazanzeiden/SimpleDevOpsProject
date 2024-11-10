@@ -19,7 +19,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ dest_dir }}"
-        version: master
+        version: Master
         force: yes
 
     # Step 5: Run Docker Compose to bring up the application (in the background)
