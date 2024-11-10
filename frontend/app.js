@@ -1,7 +1,7 @@
 const root = document.getElementById("root");
 
 // Fetching data from the backend API
-fetch('http://backend:5000/api')  // API URL from the backend container
+fetch('http://127.0.0.1:5000/api')  // API URL from the backend container
     .then(response => response.json())
     .then(data => {
         root.innerHTML = `<h1>${data.message}</h1>`;
