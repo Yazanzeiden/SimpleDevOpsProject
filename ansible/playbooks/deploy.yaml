@@ -74,7 +74,7 @@
         volumes:
           - "{{ backend_dir }}:/app"  # Mount the backend directory to the container
         state: started
-        restart_policy: never
+        restart_policy: no
         auto_remove: yes
       register: result
 
