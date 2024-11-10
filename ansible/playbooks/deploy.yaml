@@ -48,12 +48,13 @@
 ---
 - name: Deploy and Set Up Application on EC2
   hosts: webservers
-  become: true  # Use root privileges for necessary tasks
+  become: true
   vars:
-    repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
-    dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
-    backend_dir: "/home/ec2-user/SimpleDevOpsProject/backend"  # Backend directory where the app.py file is located
-    docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
+    repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"
+    dest_dir: "/home/ec2-user/SimpleDevOpsProject"
+    backend_dir: "/home/ec2-user/SimpleDevOpsProject/backend"
+    docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"
+    ansible_python_interpreter: /usr/bin/python2  # Ensure Python 2 is used globally for this playbook
 
   tasks:
     # Step 1: Clone the repository into the home directory
@@ -66,14 +67,13 @@
 
     # Step 2: Run unit tests for the backend application using a Docker container
     - name: Run unit tests for the backend application using Docker
-      ansible_python_interpreter: /usr/bin/python2  # Ensure Python 2 for this task
       docker_container:
         name: pytest-container
         image: python:2.7  # Use Python 2.7 image
         command: |
           bash -c "pip install pytest && cd /app && pytest --maxfail=1 --disable-warnings -q"
         volumes:
-          - "{{ backend_dir }}:/app"  # Mount the backend directory to the container
+          - "{{ backend_dir }}:/app"
         state: started
         restart_policy: no
         auto_remove: yes
@@ -83,21 +83,21 @@
     - name: Fail the playbook if unit tests fail
       fail:
         msg: "Unit tests failed! Deployment will not proceed."
-      when: result.rc != 0  # Check the return code of the docker container task
+      when: result.rc != 0
 
     # Step 4: Ensure Docker is installed on the EC2 instance
     - name: Ensure Docker is installed
       package:
         name: docker
         state: present
-      when: ansible_facts.packages.docker is not defined  # Only install if Docker is not present
+      when: ansible_facts.packages.docker is not defined
 
     # Step 5: Deploy the application using Docker Compose if unit tests pass
     - name: Deploy the application using Docker Compose
       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
       args:
         chdir: "{{ docker_compose_dir }}"
-      when: result.rc == 0  # Only proceed if unit tests pass (return code is 0)
+      when: result.rc == 0
 
     # Step 6: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
@@ -106,11 +106,12 @@
         chdir: "{{ docker_compose_dir }}"
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
-      when: result.rc == 0  # Only check Docker Compose if tests passed
+      when: result.rc == 0
 
     # Step 7: Show success message if everything is successful
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
-      when: result.rc == 0  # Only show success if unit tests passed
+      when: result.rc == 0
+
 
