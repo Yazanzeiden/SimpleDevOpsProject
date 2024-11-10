@@ -25,15 +25,27 @@ services:
     networks:
       - app-network
 
+  # redis:
+  #   container_name: redis
+  #   image: "redis:alpine"
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data  # Mount volume to persist Redis data
+  #   networks:
+  #     - app-network
   redis:
     container_name: redis
     image: "redis:alpine"
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data  # Mount volume to persist Redis data
     networks:
       - app-network
+    volumes:
+      - simpledevopsproject_redis_data:/data
+      - ./path/to/custom/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
 
   nginx:
     container_name: nginx
