@@ -1,8 +1,39 @@
 ---
-- name: Backup to s3
+- name: Backup Redis and Code to S3
   hosts: webservers
-  become: true  # Use root privileges for necessary tasks
+  become: true
+
   tasks:
-    - name: Backup to s3
-      pause:
-        seconds: 60
+
+    - name: Backup Redis volume to S3
+      command: "docker cp simpledevopsproject_redis_data:/data /tmp/redis_backup"
+      register: redis_backup
+
+    - name: Backup application code to S3
+      command: "tar -czf /tmp/app_backup.tar.gz /home/ec2-user/SimpleDevOpsProject"
+      register: code_backup
+
+    - name: Upload Redis backup to S3
+      aws_s3:
+        bucket: simple-devops-project-backup-yazan
+        object: redis_backup.tar.gz
+        src: /tmp/redis_backup
+        mode: put
+      when: redis_backup is succeeded
+
+    - name: Upload code backup to S3
+      aws_s3:
+        bucket: simple-devops-project-backup-yazan
+        object: app_backup.tar.gz
+        src: /tmp/app_backup.tar.gz
+        mode: put
+      when: code_backup is succeeded
+
+    - name: Clean up backup files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/redis_backup
+        - /tmp/app_backup.tar.gz
+
