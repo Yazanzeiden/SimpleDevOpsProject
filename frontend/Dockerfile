@@ -1,23 +1,15 @@
-# Build stage
-FROM node:16 as build
-
-WORKDIR /app
-
-# Copy package.json and install dependencies
-COPY package.json yarn.lock ./
-RUN yarn install
-
-# Copy the rest of the app and build it
-COPY . .
-RUN yarn build
-
-# Production stage
+# Use the official Nginx image
 FROM nginx:alpine
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Set the working directory to the Nginx default HTML directory
+WORKDIR /usr/share/nginx/html
 
-# Copy build files to Nginx's HTML directory
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy the frontend static files into the container
+COPY index.html app.js ./
 
-EXPOSE 80
+# No need to run any command since Nginx runs by default
+
+
+
+
+
