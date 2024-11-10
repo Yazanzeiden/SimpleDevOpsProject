@@ -77,13 +77,13 @@
         restart_policy: never
         remove: yes  # Remove container after test completion
       register: result
-      failed_when: result.state != 'started'  # If the container doesn't start, mark as failed
+      failed_when: result.container.state != 'running'  # Ensure the container is running
 
     # Step 3: Fail the playbook if unit tests fail
     - name: Fail the playbook if unit tests fail
       fail:
         msg: "Unit tests failed! Deployment will not proceed."
-      when: result.state != 'started'
+      when: result.container.state != 'running'
 
     # Step 4: Ensure Docker is installed on the EC2 instance
     - name: Ensure Docker is installed
@@ -96,7 +96,7 @@
       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
       args:
         chdir: "{{ docker_compose_dir }}"
-      when: result.state == 'started'
+      when: result.container.state == 'running'
 
     # Step 6: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
@@ -105,11 +105,10 @@
         chdir: "{{ docker_compose_dir }}"
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
-      when: result.state == 'started'
+      when: result.container.state == 'running'
 
     # Step 7: Show success message if everything is successful
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
-      when: result.state == 'started'
-
+      when: result.container.state == 'running'
