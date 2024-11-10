@@ -2,6 +2,7 @@
 - name: Deploy and Test Application
   hosts: webservers
   become: false  # If you need root privileges
+  remote_user: ec2-user
 
 
   tasks:
