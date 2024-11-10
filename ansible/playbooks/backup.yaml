@@ -5,9 +5,24 @@
 
   tasks:
 
-    - name: Backup Redis volume to S3
-      command: "sudo docker cp simpledevopsproject_redis_data:/data /tmp/redis_backup"
+    - name: Create temporary container with Redis volume mounted
+      docker_container:
+        name: backup_redis
+        image: alpine
+        command: sleep infinity
+        volumes:
+          - simpledevopsproject_redis_data:/data
+        state: started
+
+    - name: Copy Redis data from container to local backup location
+      command: "docker cp backup_redis:/data /tmp/redis_backup"
       register: redis_backup
+      become: true  # Ensure the command runs with sudo privileges
+
+    - name: Stop the temporary container
+      docker_container:
+        name: backup_redis
+        state: stopped
 
     - name: Backup application code to S3
       command: "tar -czf /tmp/app_backup.tar.gz /home/ec2-user/SimpleDevOpsProject"
@@ -36,4 +51,3 @@
       loop:
         - /tmp/redis_backup
         - /tmp/app_backup.tar.gz
-
