@@ -61,24 +61,23 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ dest_dir }}"
-        version: Master
+        version: master  # Use lowercase 'master' for the branch name
         force: yes
 
-     # Step 2: Run unit tests for the backend application using a Docker container
+    # Step 2: Run unit tests for the backend application using a Docker container
     - name: Run unit tests for the backend application using Docker
       ansible_python_interpreter: /usr/bin/python2  # Ensure Python 2 for this task
       docker_container:
         name: pytest-container
         image: python:2.7  # Use Python 2.7 image
         command: |
-           bash -c "pip install pytest && cd /app && pytest --maxfail=1 --disable-warnings -q"
+          bash -c "pip install pytest && cd /app && pytest --maxfail=1 --disable-warnings -q"
         volumes:
           - "{{ backend_dir }}:/app"  # Mount the backend directory to the container
         state: started
         restart_policy: no
         auto_remove: yes
       register: result
-
 
     # Step 3: Fail the playbook if unit tests fail
     - name: Fail the playbook if unit tests fail
@@ -91,6 +90,7 @@
       package:
         name: docker
         state: present
+      when: ansible_facts.packages.docker is not defined  # Only install if Docker is not present
 
     # Step 5: Deploy the application using Docker Compose if unit tests pass
     - name: Deploy the application using Docker Compose
@@ -113,3 +113,4 @@
       debug:
         msg: "Deployment was successful, Docker Compose is running."
       when: result.rc == 0  # Only show success if unit tests passed
+
