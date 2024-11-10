@@ -8,7 +8,7 @@
     - name: Download Redis backup from S3
       aws_s3:
         bucket: simple-devops-project-backup-yazan
-        object: redis_backup/
+        object: redis_backup/dump.rdp
         dest: /tmp/redis_backup/dump.rdb
         mode: get
 
