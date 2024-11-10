@@ -14,11 +14,6 @@
         name: docker
         state: present
 
-
-    # Step 3: Make Docker Compose executable
-    - name: Make Docker Compose executable
-      command: chmod +x /usr/local/bin/docker-compose
-
     # Step 4: Clone the repository into the home directory
     - name: Clone the repository into the home directory
       git:
