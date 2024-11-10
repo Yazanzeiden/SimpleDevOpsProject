@@ -56,7 +56,7 @@
     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
 
   tasks:
-    # Step 1: Install Python dependencies for unit tests
+    # Step 1: Install Python 3 and pip
     - name: Ensure Python 3 and pip are installed
       package:
         name:
@@ -64,11 +64,12 @@
           - python3-pip
         state: present
 
-    # Step 2: Install pytest for running unit tests
+    # Step 2: Install pytest
     - name: Install pytest
       pip:
         name: pytest
         state: present
+        executable: pip3  # Make sure we're using pip3 for Python 3
 
     # Step 3: Clone the repository into the home directory
     - name: Clone the repository into the home directory
@@ -120,4 +121,3 @@
       debug:
         msg: "Deployment was successful, Docker Compose is running."
       when: result.rc == 0
-
