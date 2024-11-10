@@ -1,4 +1,62 @@
-version: '3'
+# version: '3'
+
+# services:
+#   frontend:
+#     container_name: frontend
+#     build:
+#       context: ./frontend  # Frontend directory
+#     ports:
+#       - "8080:80"  # Expose port 8080 for frontend
+#     depends_on:
+#       - backend
+#     networks:
+#       - app-network
+
+#   backend:
+#     container_name: backend
+#     build:
+#       context: ./backend  # Backend directory
+#     ports:
+#       - "5000:5000"  # Expose port 5000 for backend
+#     environment:
+#       - REDIS_HOST=redis
+#     depends_on:
+#       - redis
+#     networks:
+#       - app-network
+
+#   redis:
+#     container_name: redis
+#     image: "redis:alpine"
+#     ports:
+#       - "6379:6379"
+#     volumes:
+#       - redis_data:/data  # Mount volume to persist Redis data
+#     networks:
+#       - app-network
+
+#   nginx:
+#     container_name: nginx
+#     image: nginx:alpine
+#     ports:
+#       - "80:80"
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/nginx.conf
+#     command: sh -c "chown root:root /etc/nginx/nginx.conf && chmod 644 /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+#     depends_on:
+#       - frontend
+#       - backend
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+# volumes:
+#   redis_data:  # Declare volume for Redis data
+
+
 
 services:
   frontend:
@@ -25,15 +83,6 @@ services:
     networks:
       - app-network
 
-  # redis:
-  #   container_name: redis
-  #   image: "redis:alpine"
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis_data:/data  # Mount volume to persist Redis data
-  #   networks:
-  #     - app-network
   redis:
     container_name: redis
     image: "redis:alpine"
@@ -42,10 +91,7 @@ services:
     networks:
       - app-network
     volumes:
-      - simpledevopsproject_redis_data:/data
-      - ./path/to/custom/redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
-
+      - simpledevopsproject_redis_data:/data  # Mount the volume to /data inside the container
 
   nginx:
     container_name: nginx
@@ -66,7 +112,5 @@ networks:
     driver: bridge
 
 volumes:
-  redis_data:  # Declare volume for Redis data
-
-
-
+  simpledevopsproject_redis_data:
+    driver: local
