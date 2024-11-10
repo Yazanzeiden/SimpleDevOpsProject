@@ -52,13 +52,13 @@
     #     remote_src: yes
 
 
-    - name: Clean up temporary backup files
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - /tmp/redis_backup/dump.rdb
-        - /tmp/app_backup.tar.gz
+    # - name: Clean up temporary backup files
+    #   file:
+    #     path: "{{ item }}"
+    #     state: absent
+    #   loop:
+    #     - /tmp/redis_backup/dump.rdb
+    #     - /tmp/app_backup.tar.gz
 
     - name: Stop the restore Redis container
       docker_container:
