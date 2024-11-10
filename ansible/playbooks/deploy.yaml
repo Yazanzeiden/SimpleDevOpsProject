@@ -75,7 +75,7 @@
           - "{{ backend_dir }}:/app"  # Mount the backend directory to the container
         state: started
         restart_policy: never
-        remove: yes  # Remove container after test completion
+        auto_remove: yes
       register: result
 
     # Step 3: Fail the playbook if unit tests fail
