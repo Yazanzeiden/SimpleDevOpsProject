@@ -6,7 +6,7 @@
   tasks:
 
     - name: Backup Redis volume to S3
-      command: "docker cp simpledevopsproject_redis_data:/data /tmp/redis_backup"
+      command: "sudo docker cp simpledevopsproject_redis_data:/data /tmp/redis_backup"
       register: redis_backup
 
     - name: Backup application code to S3
