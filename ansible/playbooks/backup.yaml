@@ -1,4 +1,4 @@
-# ---
+---
 - name: Backup Redis and Code to S3
   hosts: backupservers
   become: true

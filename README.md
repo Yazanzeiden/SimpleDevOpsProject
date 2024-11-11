@@ -36,4 +36,10 @@ Jenkins IP: http://44.204.183.193/
 ---
 ## Infra
 
+Deployment:  Jenkins job will be triggerd then the ansible playbook will take the source code and deploy it on the code server then run the docker compose.
+
+Backup:      Jenkins will trigger the playbook for backup it will backup the soruce code and redis dump.rdb and send it to the s3 bucket in the    needed path
+
+Rollback:    Jenkins will trigger the playbook for Rollback it will take the backup from the s3 and redeploy it on the server code.
+
 ![alt text](image-2.png)
