@@ -11,22 +11,22 @@ This project demonstrates a full-stack application setup with Flask (Python) for
 ...bash
 SimpleDevOpsProject
 │
-├── ansible/                     # Contains Ansible playbooks and inventory
-│   ├── hosts/                   # Ansible hosts configuration
-│   ├── playbooks/               # Playbooks for deployment and backup
-│       ├── deploy.yaml          # Playbook for deployment and setup
-│       ├── backup.yaml          # Playbook for backing up Redis and code
-│       └── rollback.yaml        # Playbook for restoring from backup
-├── backend/                     # Backend directory for Flask application
-│   ├── app.py                   # Flask API with Redis integration
-│   ├── Dockerfile               # Dockerfile for backend container
-│   └── requirements.txt         # Python dependencies for Flask app
-├── frontend/                    # Frontend directory for Nginx static content
-│   ├── app.js                   # JavaScript to call backend API and display data
-│   └── Dockerfile               # Dockerfile for frontend container
-├── docker-compose.yml           # Docker Compose configuration for backend, frontend, and Redis
-├── nginx.conf                   # Nginx configuration for reverse proxy
-└── README.md                    # This README file
+├── ansible/                     
+│   ├── hosts/                   
+│   ├── playbooks/               
+│       ├── deploy.yaml          
+│       ├── backup.yaml          
+│       └── rollback.yaml        
+├── backend/                     
+│   ├── app.py                   
+│   ├── Dockerfile               
+│   └── requirements.txt         
+├── frontend/                    
+│   ├── app.js                  
+│   └── Dockerfile               
+├── docker-compose.yml           
+├── nginx.conf                   
+└── README.md                    
 ...
 
 ---
