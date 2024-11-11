@@ -8,26 +8,9 @@ This project demonstrates a full-stack application setup with Flask (Python) for
 
 ### Here is the directory structure of the project:
 
-...bash
-SimpleDevOpsProject
-│
-├── ansible/                     
-│   ├── hosts/                   
-│   ├── playbooks/               
-│       ├── deploy.yaml          
-│       ├── backup.yaml          
-│       └── rollback.yaml        
-├── backend/                     
-│   ├── app.py                   
-│   ├── Dockerfile               
-│   └── requirements.txt         
-├── frontend/                    
-│   ├── app.js                  
-│   └── Dockerfile               
-├── docker-compose.yml           
-├── nginx.conf                   
-└── README.md                    
-...
+
+![alt text](image-1.png)
+
 
 ---
 
