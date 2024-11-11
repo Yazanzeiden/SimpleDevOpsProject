@@ -76,7 +76,7 @@
 
     # Step 5: Restart Docker Compose services
     - name: Restart Docker Compose services
-      command: docker-compose down && docker-compose up -d
+      command: docker-compose down && docker-compose up --detach
       args:
         chdir: "{{ docker_compose_dir }}"
 
@@ -92,3 +92,4 @@
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
+
