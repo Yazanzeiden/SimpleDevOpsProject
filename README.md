@@ -24,6 +24,16 @@ Jenkins IP: http://44.204.183.193/
 
 
 ---
+## Nginx 
+### frontend http://server-ip/
+
+![alt text](image-3.png)
+
+### Backend http://server-ip/api/
+
+![alt text](image-4.png)
+
+---
 ## Infra
 
 ![alt text](image-2.png)
