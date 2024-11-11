@@ -74,13 +74,20 @@
       args:
         chdir: "{{ docker_compose_dir }}"
 
-    # Step 5: Restart Docker Compose services
-    - name: Restart Docker Compose services
-      command: docker-compose down && docker-compose up --detach
+    # Step 5: Stop running Docker Compose services
+    - name: Stop running Docker Compose services
+      command: docker-compose down
       args:
         chdir: "{{ docker_compose_dir }}"
 
-    # Step 6: Verify that the Docker Compose services are up and running
+    # Step 6: Start Docker Compose services in detached mode
+    - name: Start Docker Compose services in detached mode
+      command: docker-compose up -d
+      args:
+        chdir: "{{ docker_compose_dir }}"
+
+
+    # Step 7: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
       command: docker-compose ps
       args:
@@ -88,7 +95,7 @@
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
 
-    # Step 7: Show success message
+    # Step 8: Show success message
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
