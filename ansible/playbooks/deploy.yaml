@@ -9,11 +9,7 @@
     unit_test_result: True  # Set to 'true' to simulate pass, 'false' to simulate fail
 
   tasks:
-    # Step 1: Ensure Docker is installed on the EC2 instance
-    - name: Ensure Docker is installed
-      package:
-        name: docker
-        state: present
+    
 
     # Step 2: Clone the repository into the home directory
     - name: Clone the repository into the home directory
