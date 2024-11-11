@@ -1,0 +1,54 @@
+
+Linux Questions
+
+1- What is the purpose of /dev/null , and how would you use it in a script?
+
+ /dev/null is like a "black hole" for data: anything sent to it is discarded. Its often used in scripts to suppress notneeded output or error messages that you dont need to see.
+
+2- How does the nice and renice command work, and why might you use them?
+
+ nice and renice commands are used to adjust the priority of processes in Linux, it helps to control how much CPU time they get compared to other processes andit will affects the process scheduling priority the higher the niceness the lower the priority, and the less CPU the process will use.
+
+3- If a Linux server is running slowly, how would you troubleshoot it?
+
+
+ troubleshoot a slow Linux server, start by checking system resources processes and logs to identify potential bottlenecks:
+  - Check CPU Usage:
+     use top or htop to check processes consuming high cpu
+  - Check Memory Usage:   
+     use: free -m or Use ps aux --sort=-%mem | head to list the top memory consuming processes.
+  - Check Disk Usage and I/O: 
+     Use df -h to ensure disk space isn’t full or run iostat or dstat to check for high disk IO
+  - Check Network Usage:
+      Run netstat -anp or ss to check for open connections and look for unusual network activity
+      High network usage may indicate heavy traffic or potential DDoS attacks  
+  - Look for Misconfigured Applications:
+      Applications with incorrect configurations example high memory  or runaway processes will consume resources so we check logs and settings for the app it self
+
+4- How would you determine the number of CPU cores on a Linux system
+   using this command: nproc      
+    
+AWS Questions
+
+
+1- What is the purpose of AWS Lambda cold start, and how would you reduce its impact?
+
+  happens when theres a delay as AWS sets up a new instance of your function, either on the first request or after some downtime, AWS has to allocate resources, load your code, and initialize the environment, which can lead to a brief pause. This can be noticeable in apps where speed matters, like APIs or real-time services we can handle it we cany handle it by increase memory or optmiz or code.
+
+2- How does AWS Elastic Load Balancer support high availability, and what is the difference between ALB, NLB, and CLB?
+
+  ELB supports high availability by distributing incoming traffic across multiple targets in different Availability Zones, reliability if a zone or instance goes down.
+
+  - Network Load Balancer: Operates at Layer 4 handles TCP/UDP traffic with ultra-low latency and suitable for high performance use.
+  - Application Load Balancer: Operates at Layer 7, ideal for HTTP/HTTPS traffic with routing path based.
+  - Classic Load Balancer: original option it works at both Layer 4 and 7, used for simpler setups but less features
+
+3-  How would you securely store and manage API keys for an application hosted on EC2 instances?
+
+ Using AWS Secrets Manager:Store API keys securely in AWS Secrets Manager, use IAM roles to grant EC2 instances access to the secret, ensuring only authorized instances can retrieve the keys.
+
+4- How would you troubleshoot a scenario where an EC2 instance cannot access the internet?
+
+  - first check Security gorups outbound please note that is always 0.0.0.0 unitl someone change it, then check ACLs associated with the subnet allow outbound traffic 0.0.0.0 and inbound traffic from the internet, then check if the EC2 in the pulbic subnet if yes check rout taple if its route to the inertnet gatway then verify internet gatway is exits also if the instance in the praivte subnet check if its connected to the NAT GATEWAY, sometimes the health check in the instance not healty check this if the instance healthy
+
+ 
