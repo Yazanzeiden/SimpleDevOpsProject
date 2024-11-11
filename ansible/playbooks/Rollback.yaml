@@ -1,88 +1,3 @@
-# ---
-# - name: Rollback and Restore Redis and Application Data from Latest Backup
-#   hosts: backupservers
-#   become: true
-#   vars:
-#     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
-    
-  
-#   tasks:
-
-#     - name: Ensure Redis backup directory exists
-#       file:
-#         path: /tmp/redis_backup
-#         state: directory
-#         mode: '0755'
-
-  
-#     - name: Download Redis backup from S3
-#       aws_s3:
-#         bucket: simple-devops-project-backup-yazan
-#         object: redis_backup/dump.rdb
-#         dest: /tmp/redis_backup/dump.rdb
-#         mode: get
-
-#     - name: Create temporary container with Redis volume mounted for restore
-#       docker_container:
-#         name: restore_redis
-#         image: alpine
-#         command: sleep infinity
-#         volumes:
-#           - simpledevopsproject_redis_data:/data  # Use same volume
-#         state: started
-
-#     - name: Copy Redis backup data from local to Redis container
-#       command: "docker cp /tmp/redis_backup/dump.rdb restore_redis:/data/dump.rdb"
-#       register: redis_restore
-#       become: true
-
-#     - name: Restart Redis container after restoring data
-#       docker_container:
-#         name: restore_redis
-#         state: started
-
-#     - name: Download application code backup from S3
-#       aws_s3:
-#         bucket: simple-devops-project-backup-yazan
-#         object: app_backups/app_backup.tar.gz
-#         dest: /tmp/app_backup.tar.gz
-#         mode: get
-
-#     - name: Extract application code backup to project directory
-#       unarchive:
-#         src: /tmp/app_backup.tar.gz
-#         dest: /home/ec2-user/SimpleDevOpsProject/
-#         remote_src: yes
-#         extra_opts:
-#           - --overwrite
-
-
-#     - name: Clean up temporary backup files
-#       file:
-#         path: "{{ item }}"
-#         state: absent
-#       loop:
-#         - /tmp/redis_backup/dump.rdb
-#         - /tmp/app_backup.tar.gz
-
-#     - name: Stop the restore Redis container
-#       docker_container:
-#         name: restore_redis
-#         state: stopped
-
-#     # Step 5: Stop running Docker Compose services
-#     - name: Stop running Docker Compose services
-#       command: docker-compose down
-#       args:
-#         chdir: "{{ docker_compose_dir }}"
-
-#     # Step 6: Start Docker Compose services in detached mode
-#     - name: Start Docker Compose services in detached mode
-#       command: docker-compose up -d
-#       args:
-#         chdir: "{{ docker_compose_dir }}"    
-
-
 ---
 - name: Rollback and Restore Redis and Application Data from Latest Backup
   hosts: backupservers
@@ -109,7 +24,7 @@
         image: alpine
         command: sleep infinity
         volumes:
-          - simpledevopsproject_redis_data:/data  # Use same volume
+          - simpledevopsproject_redis_data:/data  
         state: started
 
     - name: Copy Redis backup data from local to Redis container
@@ -132,7 +47,7 @@
     - name: Extract application code backup to project directory
       unarchive:
         src: /tmp/app_backup.tar.gz
-        dest: /home/ec2-user/SimpleDevOpsProject/  # Correct target directory
+        dest: /home/ec2-user/SimpleDevOpsProject/  
         remote_src: yes
         extra_opts:
           - --overwrite
