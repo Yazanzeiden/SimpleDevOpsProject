@@ -15,7 +15,7 @@ r = redis.Redis(host=redis_host, port=6379, db=0)
 @app.route('/api/', methods=['GET'])
 def api():
     # Example of setting and getting a value from Redis
-    r.set('message', 'Hello from Redis!')
+    r.set('message', 'Hello from home!')
     message = r.get('message').decode('utf-8')
     return jsonify(message=message), 200
 
