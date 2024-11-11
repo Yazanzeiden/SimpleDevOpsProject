@@ -8,39 +8,26 @@ This project demonstrates a full-stack application setup with Flask (Python) for
 
 ### Here is the directory structure of the project:
 
-
-SimpleDevOpsProject/
+...bash
+SimpleDevOpsProject
 │
-├── ansible/                         # Infrastructure configuration
-│   ├── inventory/                   # Ansible inventory files
-│   │   └── hosts                    # Hosts configuration for Ansible
-│   ├── playbooks/                   # Playbooks for deployment, backup, and rollback
-│   │   ├── deploy.yaml              # Playbook for deployment and setup
-│   │   ├── backup.yaml              # Playbook for backing up Redis and code
-│   │   └── rollback.yaml            # Playbook for restoring from backup
-│   └── roles/                       # Optional: Custom roles for reusable tasks
-│       └── redis/                   # Redis-related tasks
-│           └── tasks/               # Redis task files
-│
-├── backend/                         # Backend Flask application
-│   ├── src/                         # Application source code
-│   │   └── app.py                   # Flask API with Redis integration
-│   └── Dockerfile                   # Dockerfile for backend container
-│   └── requirements.txt             # Python dependencies for Flask app
-│
-├── frontend/                        # Frontend static content (Nginx)
-│   ├── src/                         # Static files and app logic
-│   │   └── app.js                   # JavaScript to call backend API and display data
-│   └── Dockerfile                   # Dockerfile for frontend container
-│   └── nginx.conf                   # Nginx configuration for reverse proxy
-│
-├── docker-compose.yml               # Docker Compose config for backend, frontend, Redis
-│
-├── .gitignore                       # Git ignore file (for ignoring build artifacts, etc.)
-├── README.md                        # Documentation file for the project
-└── LICENSE                          # License file (if applicable)
-
-
+├── ansible/                     # Contains Ansible playbooks and inventory
+│   ├── hosts/                   # Ansible hosts configuration
+│   ├── playbooks/               # Playbooks for deployment and backup
+│       ├── deploy.yaml          # Playbook for deployment and setup
+│       ├── backup.yaml          # Playbook for backing up Redis and code
+│       └── rollback.yaml        # Playbook for restoring from backup
+├── backend/                     # Backend directory for Flask application
+│   ├── app.py                   # Flask API with Redis integration
+│   ├── Dockerfile               # Dockerfile for backend container
+│   └── requirements.txt         # Python dependencies for Flask app
+├── frontend/                    # Frontend directory for Nginx static content
+│   ├── app.js                   # JavaScript to call backend API and display data
+│   └── Dockerfile               # Dockerfile for frontend container
+├── docker-compose.yml           # Docker Compose configuration for backend, frontend, and Redis
+├── nginx.conf                   # Nginx configuration for reverse proxy
+└── README.md                    # This README file
+...
 
 ---
 
