@@ -45,20 +45,22 @@
         dest: /tmp/app_backup.tar.gz
         mode: get
 
-    # - name: Extract application code backup to project directory
-    #   unarchive:
-    #     src: /tmp/app_backup.tar.gz
-    #     dest: /home/ec2-user/SimpleDevOpsProject/
-    #     remote_src: yes
+    - name: Extract application code backup to project directory
+      unarchive:
+        src: /tmp/app_backup.tar.gz
+        dest: /home/ec2-user/SimpleDevOpsProject/
+        remote_src: yes
+        extra_opts:
+          - --overwrite
 
 
-    # - name: Clean up temporary backup files
-    #   file:
-    #     path: "{{ item }}"
-    #     state: absent
-    #   loop:
-    #     - /tmp/redis_backup/dump.rdb
-    #     - /tmp/app_backup.tar.gz
+    - name: Clean up temporary backup files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/redis_backup/dump.rdb
+        - /tmp/app_backup.tar.gz
 
     - name: Stop the restore Redis container
       docker_container:
