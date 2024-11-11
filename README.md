@@ -1,4 +1,4 @@
-## Simple DevOps Project
+# Simple DevOps Project
 
 This project demonstrates a full-stack application setup with Flask (Python) for the backend and Nginx for the frontend, all orchestrated with Docker, Docker Compose, Ansible, and AWS S3 for backup.
 
