@@ -2,6 +2,9 @@
 - name: Rollback and Restore Redis and Application Data from Latest Backup
   hosts: backupservers
   become: true
+  vars:
+    docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
+    
   
   tasks:
 
@@ -66,3 +69,15 @@
       docker_container:
         name: restore_redis
         state: stopped
+
+    # Step 5: Stop running Docker Compose services
+    - name: Stop running Docker Compose services
+      command: docker-compose down
+      args:
+        chdir: "{{ docker_compose_dir }}"
+
+    # Step 6: Start Docker Compose services in detached mode
+    - name: Start Docker Compose services in detached mode
+      command: docker-compose up -d
+      args:
+        chdir: "{{ docker_compose_dir }}"    
