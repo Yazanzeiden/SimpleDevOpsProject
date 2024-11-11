@@ -152,14 +152,13 @@
         name: restore_redis
         state: stopped
 
-    # Step 5: Stop running Docker Compose services
     - name: Stop running Docker Compose services
-      command: docker-compose down
+      shell: docker-compose down
       args:
-        chdir: "{{ docker_compose_dir }}"
+       chdir: "{{ docker_compose_dir }}"
 
-    # Step 6: Start Docker Compose services in detached mode
     - name: Start Docker Compose services in detached mode
-      command: docker-compose up -d
+      shell: docker-compose up -d
       args:
-        chdir: "{{ docker_compose_dir }}"
+       chdir: "{{ docker_compose_dir }}"
+
