@@ -1,4 +1,49 @@
----
+# ---
+# - name: Deploy and Set Up Application on EC2
+#   hosts: webservers
+#   become: true  # Use root privileges for necessary tasks
+#   vars:
+#     repo_url: "https://github.com/Yazanzeiden/SimpleDevOpsProject.git"  # Your repository URL
+#     dest_dir: "/home/ec2-user/SimpleDevOpsProject"  # Destination directory on EC2
+#     docker_compose_dir: "/home/ec2-user/SimpleDevOpsProject"  # Location of docker-compose.yml
+#     unit_test_result: True  # Set to 'true' to simulate pass, 'false' to simulate fail
+
+#   tasks:
+    
+
+#     # Step 2: Clone the repository into the home directory
+#     - name: Clone the repository into the home directory
+#       git:
+#         repo: "{{ repo_url }}"
+#         dest: "{{ dest_dir }}"
+#         version: Master
+#         force: yes
+
+#     # Step 3: Run the mock unit test step
+#     - name: Run mock unit test
+#       debug:
+#         msg: "Unit test result: {{ unit_test_result }}"
+#       failed_when: unit_test_result == false  # Fail if 'unit_test_result' is false
+
+#     # Step 4: Run Docker Compose to bring up the application (in the background)
+#     - name: Deploy the application using Docker Compose
+#       command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+
+#     # Step 5: Verify that the Docker Compose services are up and running
+#     - name: Check if Docker Compose services are running
+#       command: docker-compose ps
+#       args:
+#         chdir: "{{ docker_compose_dir }}"
+#       register: docker_compose_status
+#       failed_when: "'Up' not in docker_compose_status.stdout"
+
+#     # Step 6: Show success message
+#     - name: Show success message
+#       debug:
+#         msg: "Deployment was successful, Docker Compose is running."
+
 - name: Deploy and Set Up Application on EC2
   hosts: webservers
   become: true  # Use root privileges for necessary tasks
@@ -9,8 +54,6 @@
     unit_test_result: True  # Set to 'true' to simulate pass, 'false' to simulate fail
 
   tasks:
-    
-
     # Step 2: Clone the repository into the home directory
     - name: Clone the repository into the home directory
       git:
@@ -25,13 +68,19 @@
         msg: "Unit test result: {{ unit_test_result }}"
       failed_when: unit_test_result == false  # Fail if 'unit_test_result' is false
 
-    # Step 4: Run Docker Compose to bring up the application (in the background)
-    - name: Deploy the application using Docker Compose
-      command: docker-compose -f "{{ docker_compose_dir }}/docker-compose.yml" up -d
+    # Step 4: Rebuild Docker images to reflect the latest changes
+    - name: Rebuild Docker images
+      command: docker-compose build
       args:
         chdir: "{{ docker_compose_dir }}"
 
-    # Step 5: Verify that the Docker Compose services are up and running
+    # Step 5: Restart Docker Compose services
+    - name: Restart Docker Compose services
+      command: docker-compose down && docker-compose up -d
+      args:
+        chdir: "{{ docker_compose_dir }}"
+
+    # Step 6: Verify that the Docker Compose services are up and running
     - name: Check if Docker Compose services are running
       command: docker-compose ps
       args:
@@ -39,8 +88,7 @@
       register: docker_compose_status
       failed_when: "'Up' not in docker_compose_status.stdout"
 
-    # Step 6: Show success message
+    # Step 7: Show success message
     - name: Show success message
       debug:
         msg: "Deployment was successful, Docker Compose is running."
-
